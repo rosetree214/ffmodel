@@ -32,4 +32,4 @@ services:
     
 databases:
   - name: ffmodel-db
-    plan: free 
+    plan: free
