@@ -25,10 +25,6 @@ services:
       - key: RATE_LIMIT_WINDOW
         value: "60"
     
-  - type: redis
-    name: ffmodel-redis
-    plan: free
-    
 databases:
   - name: ffmodel-db
     plan: free
