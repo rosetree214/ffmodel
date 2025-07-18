@@ -47,16 +47,36 @@ app = FastAPI(
 # Setup security middleware
 app = setup_security_middleware(app)
 
-origins = [
+# Configure CORS origins for production
+allowed_origins = [
     os.getenv("NETLIFY_URL", "http://localhost:5173"),
 ]
+
+# Add additional origins for production
+if os.getenv("ENVIRONMENT") == "production":
+    # Add common production origins
+    production_origins = [
+        "https://*.netlify.app",
+        "https://*.onrender.com",
+    ]
+    allowed_origins.extend(production_origins)
+else:
+    # Add development origins
+    allowed_origins.extend([
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ])
+
+origins = allowed_origins
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["X-Process-Time"],
 )
 
 # Add monitoring middleware
@@ -177,3 +197,21 @@ async def simulate_draft(request: SimulationRequest, db: Session = Depends(get_d
     except Exception as e:
         logger.error(f"Error running simulation: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to run simulation")
+
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {
+        "message": "FFModel API is running",
+        "service": "ffmodel-api",
+        "version": "1.0.0",
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "docs": "/docs",
+        "health": "/api/health",
+        "endpoints": {
+            "players": "/api/players",
+            "simulate": "/api/simulate",
+            "metrics": "/api/metrics"
+        }
+    }
