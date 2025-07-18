@@ -17,7 +17,7 @@ services:
       - key: REDIS_PASSWORD
         sync: false
       - key: SECRET_KEY
-        sync: false
+        value: "AnMCdgx9VzZ8lcQU8n2cYQ31BEExTlPIcgku56gUyrE"
       - key: TRUSTED_HOSTS
         value: "*"
       - key: RATE_LIMIT_REQUESTS
