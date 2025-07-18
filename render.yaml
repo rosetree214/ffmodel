@@ -24,7 +24,7 @@ services:
         value: "100"
       - key: RATE_LIMIT_WINDOW
         value: "60"
-    pythonVersion: 3.11
+    pythonVersion: "3.11"
     
   - type: redis
     name: ffmodel-redis
